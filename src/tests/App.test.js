@@ -43,7 +43,7 @@ describe('Teste o componente App.js', () => {
 
     act(() => history.push('/asadsada'));
 
-    const notFound = screen.getByText('Page requested not found');
+    const notFound = screen.getByRole('heading', { name: /page requested not found/i });
     expect(notFound).toBeInTheDocument();
   });
 });
