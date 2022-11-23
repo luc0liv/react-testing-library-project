@@ -59,14 +59,12 @@ describe('Teste o componente <Pokedex.js />', () => {
       isPokemonFavoriteById={ favoritePokemons }
     />);
 
-    const allTypes = screen.getByRole('button', { name: /all/i });
     const firePokemons = pokemonList.filter((pokemon) => pokemon.type === 'Fire');
     const fire = screen.getByRole('button', { name: /fire/i });
 
     expect(screen.queryByText(/charmander/i)).not.toBeInTheDocument();
     userEvent.click(fire);
     expect(screen.getByText(/charmander/i)).toBeInTheDocument();
-    expect(allTypes).toBeInTheDocument();
 
     firePokemons.forEach((poke) => {
       const next = screen.getByRole('button', { name: /próximo pokémon/i });
@@ -76,7 +74,15 @@ describe('Teste o componente <Pokedex.js />', () => {
     });
   });
 
-  // it('Teste se a Pokédex contém um botão para resetar o filtro', () => {
-
-  // })
+  it('Teste se a Pokédex contém um botão para resetar o filtro', () => {
+    renderWithRouter(<Pokedex
+      pokemonList={ pokemonList }
+      isPokemonFavoriteById={ favoritePokemons }
+    />);
+    const allTypes = screen.getByRole('button', { name: /all/i });
+    const pikachu = screen.getByText(/pikachu/i);
+    expect(allTypes).toBeInTheDocument();
+    userEvent.click(allTypes);
+    expect(pikachu).toBeInTheDocument();
+  });
 });
