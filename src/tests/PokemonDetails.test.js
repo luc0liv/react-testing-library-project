@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import renderWithRouter from '../renderWithRouter';
 import pokemonList from '../data';
 import { PokemonDetails } from '../pages';
+import { PokemonData } from '../components';
 
 const favoritePokemons = {
   4: false,
@@ -71,5 +72,30 @@ describe('Teste se as informações detalhadas do Pokémon selecionado são most
 
     const paragraph = screen.getByText(/this intelligent pokémon roasts hard berries with electricity to make them tender enough to eat\./i);
     expect(paragraph).toBeInTheDocument();
+  });
+});
+
+describe('Teste se existe na página uma seção com os mapas contendo as localizações do Pokémon', () => {
+  it('Na seção de detalhes deverá existir um heading h2 com o texto Game Locations of <name>; onde <name> é o nome do Pokémon exibido', () => {
+    renderWithRouter(<PokemonDetails
+      isPokemonFavoriteById={ favoritePokemons }
+      match={ matchProp }
+      pokemonList={ pokemonList }
+      onUpdateFavoritePokemon={ () => favoritePokemons }
+    />);
+    const selectedPokemon = pokemonList.find((pokemon) => pokemon.id === 25);
+    const locations = screen.getByRole('heading', { name: `Game Locations of ${selectedPokemon.name}` });
+    expect(locations).toBeInTheDocument();
+  });
+
+  it('Todas as localizações do Pokémon devem ser mostradas na seção de detalhes', () => {
+    const selectedPokemon = pokemonList.find((pokemon) => pokemon.id === 25);
+    renderWithRouter(<PokemonData pokemon={ selectedPokemon } />);
+    const locationMap = screen.getAllByRole('img');
+    locationMap.forEach((location) => {
+      expect(location).toBeInTheDocument();
+      expect(location).toHaveAttribute('src', location.src);
+      expect(location).toHaveAttribute('alt', `${selectedPokemon.name} location`);
+    });
   });
 });
